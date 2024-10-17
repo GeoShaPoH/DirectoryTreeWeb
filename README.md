@@ -11,6 +11,25 @@ DirectoryTreeWeb is a Flask-based web application that generates a visual repres
 - Responsive and modern UI design
 - Custom favicon
 - One-click run script for easy startup
+- Blacklist folders: Hide content of specified folders to prevent lengthy outputs (e.g., virtual environments or library directories)
+
+
+## Blacklist Functionality
+
+DirectoryTreeWeb includes a feature that allows users to exclude the contents of certain folders (e.g., `venv`, `node_modules`) from the displayed tree. This is particularly useful for directories with many files or nested structures, as it helps keep the output concise.
+
+The blacklist is defined within `app.py` as a list of folder names.
+
+# Example of blacklist definition
+   ```
+   blacklist = ["venv", "node_modules", "dist", "build"]
+   ```
+
+To customize, simply add or remove folder names in this list.
+
+# How It Works
+
+When generating the directory tree, if a folder name matches one in the blacklist, only the folder name is shown in the output, without listing its contents.
 
 ## Installation
 
