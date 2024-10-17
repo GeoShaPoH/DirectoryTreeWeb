@@ -16,7 +16,7 @@ DirectoryTreeWeb is a Flask-based web application that generates a visual repres
 
 1. Clone the repository:
    ```
-   git clone https://github.com/GeoShaPoH/FlaskFolderTree.git
+   git clone https://github.com/GeoShaPoH/DirectoryTreeWeb.git
    cd DirectoryTreeWeb
    ```
 
