@@ -20,14 +20,14 @@ DirectoryTreeWeb includes a feature that allows users to exclude the contents of
 
 The blacklist is defined within `app.py` as a list of folder names.
 
-# Example of blacklist definition
+## Example of blacklist definition
    ```
    blacklist = ["venv", "node_modules", "dist", "build"]
    ```
 
 To customize, simply add or remove folder names in this list.
 
-# How It Works
+## How It Works
 
 When generating the directory tree, if a folder name matches one in the blacklist, only the folder name is shown in the output, without listing its contents.
 
