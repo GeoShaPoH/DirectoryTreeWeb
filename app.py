@@ -3,6 +3,8 @@ import os
 
 app = Flask(__name__)
 
+blacklist = ["venv", "node_modules", "dist", "build", ".git", "__pycache__", ".idea"]
+
 def generate_directory_tree(path, prefix=''):
     tree = ''
     try:
@@ -12,8 +14,11 @@ def generate_directory_tree(path, prefix=''):
         for pointer, name in zip(pointers, contents):
             full_path = os.path.join(path, name)
             if os.path.isdir(full_path):
-                tree += f"{prefix}{pointer}{name}/\n"
-                tree += generate_directory_tree(full_path, prefix + ('│   ' if pointer == '├── ' else '    '))
+                if name in blacklist:
+                    tree += f"{prefix}{pointer}{name}/\n"
+                else:
+                    tree += f"{prefix}{pointer}{name}/\n"
+                    tree += generate_directory_tree(full_path, prefix + ('│   ' if pointer == '├── ' else '    '))
             else:
                 tree += f"{prefix}{pointer}{name}\n"
     except PermissionError:
