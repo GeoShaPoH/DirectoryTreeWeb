@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <title>Directory Tree Generator</title>
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --background-color: #ecf0f1;
+        --text-color: #34495e;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: var(--secondary-color);
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+      }
+      input[type="text"] {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      pre {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 15px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      #output-container {
+        position: relative;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        padding: 5px 10px;
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .copy-btn:hover {
+        background-color: #34495e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Directory Tree Generator</h1>
+      <form method="post">
+        <input
+          type="text"
+          name="path"
+          placeholder="Enter directory path"
+          required
+        />
+        <button type="submit">Generate Tree</button>
+        <button type="button" onclick="clearOutput()">Clear Output</button>
+      </form>
+      <div id="output-container">
+        {% if tree %}
+        <h2>Directory Tree:</h2>
+        <pre><code id="tree-output">{{ tree }}</code></pre>
+        <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+        {% endif %}
+      </div>
+    </div>
+
+    <script>
+      function copyToClipboard() {
+        const treeOutput = document.getElementById("tree-output");
+        navigator.clipboard.writeText(treeOutput.textContent).then(() => {
+          const copyBtn = document.querySelector(".copy-btn");
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => {
+            copyBtn.textContent = "Copy";
+          }, 2000);
+        });
+      }
+
+      function clearOutput() {
+        const outputContainer = document.getElementById("output-container");
+        outputContainer.innerHTML = "";
+      }
+    </script>
+  </body>
+</html>
