@@ -20,6 +20,8 @@ DirectoryTreeWeb es una aplicación web moderna y modular basada en Flask que ge
 
 ### ⚙️ **Configuración Avanzada**
 - **Blacklist de carpetas** para excluir directorios específicos (venv, node_modules, etc.)
+- **Blacklist de archivos** para excluir archivos específicos (.env, config.json, etc.)
+- **Blacklist de extensiones** para excluir tipos de archivos (.tmp, .log, .cache, etc.)
 - **Profundidad máxima configurable** (1-20 niveles)
 - **Mostrar archivos ocultos** opcional
 - **Opciones de ordenamiento** (nombre, tamaño, fecha de modificación)
@@ -71,6 +73,12 @@ DirectoryTreeWeb es una aplicación web moderna y modular basada en Flask que ge
    python init_db.py
    ```
    > **Importante:** Este paso es esencial antes de arrancar la aplicación por primera vez.
+   
+   **Para usuarios existentes:** Si ya tienes una base de datos anterior, ejecuta:
+   ```bash
+   python migrate_db.py
+   ```
+   Esto agregará los nuevos campos de blacklist de archivos y extensiones.
 
 5. **Ejecuta la aplicación:**
    ```bash
@@ -98,7 +106,9 @@ DirectoryTreeWeb es una aplicación web moderna y modular basada en Flask que ge
    - O usa el botón "Browse" para navegar por el sistema
 
 2. **Configura las opciones** (opcional):
-   - **Blacklist:** Agrega carpetas que quieres excluir
+   - **Blacklist Folders:** Agrega carpetas que quieres excluir
+   - **Blacklist Files:** Agrega archivos específicos que quieres excluir
+   - **Blacklist Extensions:** Agrega extensiones de archivos que quieres excluir
    - **Max Depth:** Define la profundidad máxima del árbol
    - **Show Hidden:** Marca para incluir archivos ocultos
    - **Sort By:** Elige el criterio de ordenamiento

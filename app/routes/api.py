@@ -15,6 +15,8 @@ def api_tree():
     tree = os.path.basename(path) + '/\n' + generate_tree(
         path,
         blacklist=config.get_blacklist(),
+        file_blacklist=config.get_file_blacklist(),
+        extension_blacklist=config.get_extension_blacklist(),
         max_depth=config.max_depth,
         show_hidden=config.show_hidden,
         sort_option=config.sort_option

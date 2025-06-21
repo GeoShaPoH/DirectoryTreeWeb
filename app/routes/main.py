@@ -18,6 +18,8 @@ def index():
             tree = os.path.basename(path) + '/\n' + generate_tree(
                 path,
                 blacklist=config.get_blacklist(),
+                file_blacklist=config.get_file_blacklist(),
+                extension_blacklist=config.get_extension_blacklist(),
                 max_depth=config.max_depth,
                 show_hidden=config.show_hidden,
                 sort_option=config.sort_option
@@ -38,9 +40,20 @@ def update_config():
     config.max_depth = int(data.get('max_depth', config.max_depth))
     config.show_hidden = bool(data.get('show_hidden', config.show_hidden))
     config.sort_option = data.get('sort_option', config.sort_option)
+    
+    # Actualizar blacklists
     blacklist = data.get('blacklist')
     if blacklist:
         config.set_blacklist(json.loads(blacklist))
+    
+    file_blacklist = data.get('file_blacklist')
+    if file_blacklist:
+        config.set_file_blacklist(json.loads(file_blacklist))
+    
+    extension_blacklist = data.get('extension_blacklist')
+    if extension_blacklist:
+        config.set_extension_blacklist(json.loads(extension_blacklist))
+    
     db.session.commit()
     flash('Configuración actualizada', 'success')
     return redirect(url_for('main.index')) 

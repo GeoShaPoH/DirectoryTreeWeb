@@ -104,7 +104,7 @@
             </h2>
             
             <form method="post" action="/config" class="space-y-4">
-              <!-- Blacklist Section -->
+              <!-- Blacklist Folders Section -->
               <div>
                 <label class="block text-sm font-medium text-slate-700 mb-2">Blacklist Folders</label>
                 <div class="flex flex-wrap gap-2 mb-3" id="blacklist-list">
@@ -124,6 +124,50 @@
                   </button>
                 </div>
                 <input type="hidden" name="blacklist" id="blacklist-hidden" value='{{ config.blacklist }}' />
+              </div>
+
+              <!-- Blacklist Files Section -->
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Blacklist Files</label>
+                <div class="flex flex-wrap gap-2 mb-3" id="file-blacklist-list">
+                  {% for file in config.get_file_blacklist() %}
+                    <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                      {{ file }} 
+                      <button type="button" onclick="removeFileBlacklist('{{ file }}')" class="text-red-500 hover:text-red-700" title="Remove from blacklist">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                      </button>
+                    </span>
+                  {% endfor %}
+                </div>
+                <div class="flex gap-2">
+                  <input type="text" id="file-blacklist-input" placeholder="Add file (e.g., .env, config.json)..." class="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
+                  <button type="button" onclick="addFileBlacklist()" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" title="Add file to blacklist">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <input type="hidden" name="file_blacklist" id="file-blacklist-hidden" value='{{ config.file_blacklist }}' />
+              </div>
+
+              <!-- Blacklist Extensions Section -->
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Blacklist Extensions</label>
+                <div class="flex flex-wrap gap-2 mb-3" id="extension-blacklist-list">
+                  {% for ext in config.get_extension_blacklist() %}
+                    <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                      {{ ext }} 
+                      <button type="button" onclick="removeExtensionBlacklist('{{ ext }}')" class="text-red-500 hover:text-red-700" title="Remove from blacklist">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                      </button>
+                    </span>
+                  {% endfor %}
+                </div>
+                <div class="flex gap-2">
+                  <input type="text" id="extension-blacklist-input" placeholder="Add extension (e.g., .tmp, .log)..." class="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
+                  <button type="button" onclick="addExtensionBlacklist()" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" title="Add extension to blacklist">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <input type="hidden" name="extension_blacklist" id="extension-blacklist-hidden" value='{{ config.extension_blacklist }}' />
               </div>
 
               <!-- Other Settings -->
@@ -231,10 +275,73 @@
           container.appendChild(span);
         });
       }
+
+      // File blacklist management
+      function addFileBlacklist() {
+        const input = document.getElementById('file-blacklist-input');
+        const value = input.value.trim();
+        if (!value) return;
+        let list = JSON.parse(document.getElementById('file-blacklist-hidden').value || '[]');
+        if (!list.includes(value)) list.push(value);
+        document.getElementById('file-blacklist-hidden').value = JSON.stringify(list);
+        renderFileBlacklist(list);
+        input.value = '';
+      }
+      function removeFileBlacklist(file) {
+        let list = JSON.parse(document.getElementById('file-blacklist-hidden').value || '[]');
+        list = list.filter(f => f !== file);
+        document.getElementById('file-blacklist-hidden').value = JSON.stringify(list);
+        renderFileBlacklist(list);
+      }
+      function renderFileBlacklist(list) {
+        const container = document.getElementById('file-blacklist-list');
+        container.innerHTML = '';
+        list.forEach(file => {
+          const span = document.createElement('span');
+          span.className = 'bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm flex items-center gap-2';
+          span.innerHTML = `${file} <button type="button" onclick="removeFileBlacklist('${file}')" class="text-red-500 hover:text-red-700" title="Remove from blacklist"><i class='fa-solid fa-xmark text-xs'></i></button>`;
+          container.appendChild(span);
+        });
+      }
+
+      // Extension blacklist management
+      function addExtensionBlacklist() {
+        const input = document.getElementById('extension-blacklist-input');
+        const value = input.value.trim();
+        if (!value) return;
+        // Asegurar que la extensión comience con punto
+        if (!value.startsWith('.')) {
+          value = '.' + value;
+        }
+        let list = JSON.parse(document.getElementById('extension-blacklist-hidden').value || '[]');
+        if (!list.includes(value)) list.push(value);
+        document.getElementById('extension-blacklist-hidden').value = JSON.stringify(list);
+        renderExtensionBlacklist(list);
+        input.value = '';
+      }
+      function removeExtensionBlacklist(ext) {
+        let list = JSON.parse(document.getElementById('extension-blacklist-hidden').value || '[]');
+        list = list.filter(e => e !== ext);
+        document.getElementById('extension-blacklist-hidden').value = JSON.stringify(list);
+        renderExtensionBlacklist(list);
+      }
+      function renderExtensionBlacklist(list) {
+        const container = document.getElementById('extension-blacklist-list');
+        container.innerHTML = '';
+        list.forEach(ext => {
+          const span = document.createElement('span');
+          span.className = 'bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm flex items-center gap-2';
+          span.innerHTML = `${ext} <button type="button" onclick="removeExtensionBlacklist('${ext}')" class="text-red-500 hover:text-red-700" title="Remove from blacklist"><i class='fa-solid fa-xmark text-xs'></i></button>`;
+          container.appendChild(span);
+        });
+      }
+
       // Preset management
       function savePreset() {
         const config = {
           blacklist: document.getElementById('blacklist-hidden').value,
+          file_blacklist: document.getElementById('file-blacklist-hidden').value,
+          extension_blacklist: document.getElementById('extension-blacklist-hidden').value,
           max_depth: document.querySelector('input[name="max_depth"]').value,
           show_hidden: document.querySelector('input[name="show_hidden"]').checked,
           sort_option: document.querySelector('select[name="sort_option"]').value
@@ -248,6 +355,10 @@
         const config = JSON.parse(preset);
         document.getElementById('blacklist-hidden').value = config.blacklist;
         renderBlacklist(JSON.parse(config.blacklist));
+        document.getElementById('file-blacklist-hidden').value = config.file_blacklist || '[]';
+        renderFileBlacklist(JSON.parse(config.file_blacklist || '[]'));
+        document.getElementById('extension-blacklist-hidden').value = config.extension_blacklist || '[]';
+        renderExtensionBlacklist(JSON.parse(config.extension_blacklist || '[]'));
         document.querySelector('input[name="max_depth"]').value = config.max_depth;
         document.querySelector('input[name="show_hidden"]').checked = config.show_hidden;
         document.querySelector('select[name="sort_option"]').value = config.sort_option;
@@ -255,6 +366,10 @@
       function resetConfig() {
         document.getElementById('blacklist-hidden').value = '["venv","node_modules","dist","build",".git","__pycache__",".idea"]';
         renderBlacklist(["venv","node_modules","dist","build",".git","__pycache__",".idea"]);
+        document.getElementById('file-blacklist-hidden').value = '[]';
+        renderFileBlacklist([]);
+        document.getElementById('extension-blacklist-hidden').value = '["tmp","log","cache","DS_Store","Thumbs.db","pyc","pyo"]';
+        renderExtensionBlacklist([".tmp",".log",".cache",".DS_Store","Thumbs.db",".pyc",".pyo"]);
         document.querySelector('input[name="max_depth"]').value = 5;
         document.querySelector('input[name="show_hidden"]').checked = false;
         document.querySelector('select[name="sort_option"]').value = 'name';
@@ -387,6 +502,8 @@
       document.addEventListener('DOMContentLoaded', function() {
         try {
           renderBlacklist(JSON.parse(document.getElementById('blacklist-hidden').value || '[]'));
+          renderFileBlacklist(JSON.parse(document.getElementById('file-blacklist-hidden').value || '[]'));
+          renderExtensionBlacklist(JSON.parse(document.getElementById('extension-blacklist-hidden').value || '[]'));
         } catch {}
         // Si no hay árbol generado, asegúrate de que el mensaje vacío esté presente
         const outputContainer = document.getElementById("output-container");
